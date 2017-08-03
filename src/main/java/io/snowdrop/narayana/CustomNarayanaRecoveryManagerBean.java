@@ -17,9 +17,7 @@
 package io.snowdrop.narayana;
 
 import com.arjuna.ats.jbossatx.jta.RecoveryManagerService;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.jta.narayana.NarayanaRecoveryManagerBean;
-import org.springframework.context.event.EventListener;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -43,11 +41,11 @@ public class CustomNarayanaRecoveryManagerBean extends NarayanaRecoveryManagerBe
         this.recoveryManagerService = recoveryManagerService;
     }
 
-    @EventListener
-    public void create(ApplicationReadyEvent ignored) {
+    @Override
+    public void afterPropertiesSet() throws Exception {
         if (shouldStartRecoveryService()) {
             System.out.println("Starting recovery service");
-            super.create(ignored);
+            super.afterPropertiesSet();
             recoveryManagerService.addXAResourceRecovery(new DummyXAResourceRecovery());
         }
     }

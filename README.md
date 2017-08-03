@@ -18,46 +18,32 @@ oc new-app \
 2. Set environment variable
 ```
 POSTGRESQL_MAX_PREPARED_TRANSACTIONS=100
-``` 
-
-
-3. Build Spring Boot from [here](https://github.com/gytis/spring-boot/tree/1.5.x-narayana-connection-fixes) (1.5.5.BUILD-SNAPSHOT)
-
 ```
-mvn clean install -DskipTests
-```
-
-4. Deploy this application to OpenShift
-
+3. Deploy this application to OpenShift
 ```
 mvn clean fabric8:deploy -Dfabric8.mode=kubernetes
 ```
-
-5. Scale-up application
-
+4. Scale-up application
 ```
-kubectl scale statefulsets spring-boot-narayana-stateful-set-example --replicas=2
+oc scale statefulsets spring-boot-narayana-stateful-set-example --replicas=2
 ```
-
-6. Get entries
+5. Get entries
 ```
-curl http://spring-boot-narayana-stateful-set-example-test.192.168.64.3.nip.io
+curl http://spring-boot-narayana-stateful-set-example-myproject.192.168.64.3.nip.io/
 ```
-
-7. Create new entry
+6. Create new entry
 ```
-curl -X POST http://spring-boot-narayana-stateful-set-example-test.192.168.64.3.nip.io?entry=hello
+curl -X POST http://spring-boot-narayana-stateful-set-example-myproject.192.168.64.3.nip.io/?entry=hello
 ```
-
-8. Crash when creating entry
+7. Crash when creating entry
 ```
-curl -X POST http://spring-boot-narayana-stateful-set-example-test.192.168.64.3.nip.io?entry=kill
+curl -X POST http://spring-boot-narayana-stateful-set-example-myproject.192.168.64.3.nip.io/?entry=kill
 ```
 New entry 'kill' should appear after pod is restarted and recovery completes. Try killing different containers (requests are routed interchangeably between two pods).
 
 # Undeploy application
 ```
-kubectl delete statefulsets/spring-boot-narayana-stateful-set-example
+oc delete statefulsets/spring-boot-narayana-stateful-set-example
 ```
 
 # Check object store
